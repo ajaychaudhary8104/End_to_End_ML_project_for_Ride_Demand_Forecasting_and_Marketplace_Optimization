@@ -115,3 +115,25 @@ class FeatureStoreConfig:
     timestamp_column: str
     start_date: str
     end_date: str    
+
+@dataclass
+class DataTransformationConfig:
+    root_dir: Path
+    feature_repo_path: Path
+    feature_engineered_data_path: Path
+    feature_service_name: str
+    target_column: str
+    train_size: float
+    validation_size: float
+    test_size: float
+    enable_feature_selection: bool
+    num_selected_features: int
+    split_artifacts_dir: Path
+    train_file_path: Path
+    validation_file_path: Path
+    test_file_path: Path
+    preprocessor_path: Path
+    feature_selector_path: Path
+    feature_names_path: Path
+    selected_features_path: Path
+    metadata_path: Path    

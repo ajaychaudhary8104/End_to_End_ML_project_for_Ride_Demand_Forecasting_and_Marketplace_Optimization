@@ -4,7 +4,8 @@ from src.ride_demand_forecasting_and_marketplace_optimization.entity.config_enti
                                                                                            DataValidationConfig,
                                                                                            DataPreprocessingConfig,
                                                                                            FeatureEngineeringConfig,
-                                                                                           FeatureStoreConfig)
+                                                                                           FeatureStoreConfig,
+                                                                                           DataTransformationConfig)
 
 
 class ConfigurationManager:
@@ -206,3 +207,34 @@ class ConfigurationManager:
             end_date=config.end_date
         
         ) 
+    
+    def get_data_transformation_config(self) -> DataTransformationConfig:
+
+        config = self.config.data_transformation
+
+        create_directories(
+            [config.root_dir]
+        )
+
+        data_transformation_config = DataTransformationConfig(root_dir=Path(config.root_dir),
+                                                              feature_repo_path=Path(config.feature_repo_path),
+                                                                feature_engineered_data_path=Path(config.feature_engineered_data_path),
+                                                              feature_service_name=config.feature_service_name,
+                                                                target_column=config.target_column,
+                                                                train_size=config.train_size,
+                                                                validation_size=config.validation_size,
+                                                                test_size=config.test_size,
+                                                                enable_feature_selection=config.enable_feature_selection,
+                                                                num_selected_features=config.num_selected_features,
+                                                                split_artifacts_dir=Path(config.split_artifacts_dir),
+                                                                train_file_path=Path(config.train_file_path),
+                                                                validation_file_path=Path(config.validation_file_path),
+                                                                test_file_path=Path(config.test_file_path),
+                                                                preprocessor_path=Path(config.preprocessor_path),
+                                                                feature_selector_path=Path(config.feature_selector_path),
+                                                                feature_names_path=Path(config.feature_names_path),
+                                                                selected_features_path=Path(config.selected_features_path),
+                                                                metadata_path=Path(config.metadata_path)
+                                                              )
+                                                            
+        return data_transformation_config

@@ -85,4 +85,44 @@ feature_store:
 
   start_date: 2022-12-01-T00:00:00
 
-  end_date: 2022-12-31-T23:59:59  
+  end_date: 2022-12-31-T23:59:59 
+
+data_transformation:
+
+  root_dir: artifacts/data_transformation
+
+  feature_repo_path: src/ride_demand_forecasting_and_marketplace_optimization/feature_repo
+
+  feature_engineered_data_path: artifacts/feature_engineering/featured_data.parquet
+
+  feature_service_name: forecast_service
+
+  target_column: ride_requests
+
+  train_size: 0.70
+
+  validation_size: 0.15
+
+  test_size: 0.15
+
+  enable_feature_selection: False
+
+  num_selected_features: 200
+
+  split_artifacts_dir: artifacts/data_transformation/splits
+
+  train_file_path: artifacts/data_transformation/splits/train.parquet
+
+  validation_file_path: artifacts/data_transformation/splits/validation.parquet
+
+  test_file_path: artifacts/data_transformation/splits/test.parquet
+
+  preprocessor_path: artifacts/data_transformation/preprocessor.pkl
+
+  feature_selector_path: artifacts/data_transformation/feature_selector.pkl
+
+  feature_names_path: artifacts/data_transformation/feature_names.pkl
+
+  selected_features_path: artifacts/data_transformation/selected_features.pkl
+
+  metadata_path: artifacts/data_transformation/metadata.json    

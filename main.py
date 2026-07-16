@@ -4,6 +4,7 @@ from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_02_
 from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_03_data_preprocessing import DataPreprocessingTrainingPipeline
 from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_04_feature_engineering import FeatureEngineeringTrainingPipeline
 from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_05_feature_store import FeatureStoreTrainingPipeline
+from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_06_data_transformation import DataTransformationTrainingPipeline
 import warnings
 
 
@@ -66,3 +67,13 @@ try:
 except Exception as e:
         logger.exception(e)
         raise e   
+
+STAGE_NAME = "Data Transformation stage"
+try:
+   logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+   data_transformation = DataTransformationTrainingPipeline()
+   data_transformation.main()
+   logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
+except Exception as e:
+        logger.exception(e)
+        raise e
