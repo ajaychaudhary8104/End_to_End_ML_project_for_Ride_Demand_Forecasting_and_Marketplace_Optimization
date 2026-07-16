@@ -1,0 +1,271 @@
+COLUMNS:
+  timestamp: datetime64[ns]
+  zone_id: int64
+  zone_type: object
+  latitude: float64
+  longitude: float64
+  borough: object
+
+  ride_requests: int64
+  completed_rides: int64
+  cancelled_rides: int64
+
+  active_drivers: int64
+  available_drivers: int64
+  busy_drivers: int64
+
+  acceptance_rate: float64
+  utilization_rate: float64
+
+  rider_wait_time: float64
+  driver_wait_time: float64
+
+  surge_multiplier: float64
+
+  avg_fare: float64
+  avg_tip: float64
+  revenue: float64
+
+  avg_trip_distance: float64
+  avg_trip_duration: float64
+
+  traffic_index: float64
+
+  temperature: float64
+  feels_like: float64
+  humidity: float64
+  pressure: float64
+  visibility: float64
+  rainfall: float64
+  snowfall: float64
+  wind_speed: float64
+
+  holiday_flag: int64
+  concert_flag: int64
+  sports_event_flag: int64
+  festival_flag: int64
+
+  year: int32
+  quarter: int32
+  month: int32
+  week: int32
+  day: int32
+  hour: int32
+  dayofweek: int32
+  is_weekend: int32
+
+  fuel_price: float64
+  cpi: float64
+  unemployment_rate: float64
+
+target_column: ride_requests
+
+timestamp_column: timestamp
+
+categorical_columns:
+  - zone_type
+  - borough
+
+numerical_columns:
+  - latitude
+  - longitude
+  - ride_requests
+  - completed_rides
+  - cancelled_rides
+  - active_drivers
+  - available_drivers
+  - busy_drivers
+  - acceptance_rate
+  - utilization_rate
+  - rider_wait_time
+  - driver_wait_time
+  - surge_multiplier
+  - avg_fare
+  - avg_tip
+  - revenue
+  - avg_trip_distance
+  - avg_trip_duration
+  - traffic_index
+  - temperature
+  - feels_like
+  - humidity
+  - pressure
+  - visibility
+  - rainfall
+  - snowfall
+  - wind_speed
+  - fuel_price
+  - cpi
+  - unemployment_rate
+
+categorical_values:
+  zone_type:
+    - residential
+    - business
+    - airport
+    - tourist
+
+  borough:
+    - Manhattan
+    - Brooklyn
+    - Queens
+    - Bronx
+    - Staten Island
+
+high_cardinality_columns:
+  - zone_id
+
+leakage_columns:
+  - future_ride_requests
+  - future_completed_rides
+  - future_revenue
+  - future_demand
+  - future_supply
+
+numerical_ranges:
+
+  latitude:
+    min: 40.40
+    max: 41.10
+
+  longitude:
+    min: -74.40
+    max: -73.50
+
+  ride_requests:
+    min: 0
+    max: 5000
+
+  completed_rides:
+    min: 0
+    max: 5000
+
+  cancelled_rides:
+    min: 0
+    max: 5000
+
+  active_drivers:
+    min: 0
+    max: 5000
+
+  available_drivers:
+    min: 0
+    max: 5000
+
+  busy_drivers:
+    min: 0
+    max: 5000
+
+  acceptance_rate:
+    min: 0.0
+    max: 1.0
+
+  utilization_rate:
+    min: 0.0
+    max: 1.0
+
+  rider_wait_time:
+    min: 0
+    max: 500
+
+  driver_wait_time:
+    min: 0
+    max: 500
+
+  surge_multiplier:
+    min: 1.0
+    max: 10.0
+
+  avg_fare:
+    min: 0
+    max: 1000
+
+  avg_tip:
+    min: 0
+    max: 500
+
+  revenue:
+    min: 0
+    max: 10000000
+
+  avg_trip_distance:
+    min: 0
+    max: 200
+
+  avg_trip_duration:
+    min: 0
+    max: 1000
+
+  traffic_index:
+    min: 0
+    max: 200
+
+  temperature:
+    min: -50
+    max: 60
+
+  feels_like:
+    min: -60
+    max: 70
+
+  humidity:
+    min: 0
+    max: 100
+
+  pressure:
+    min: 850
+    max: 1100
+
+  visibility:
+    min: 0
+    max: 20
+
+  rainfall:
+    min: 0
+    max: 500
+
+  snowfall:
+    min: 0
+    max: 500
+
+  wind_speed:
+    min: 0
+    max: 200
+
+  fuel_price:
+    min: 0
+    max: 20
+
+  cpi:
+    min: 0
+    max: 1000
+
+  unemployment_rate:
+    min: 0
+    max: 100
+
+thresholds:
+  missing_value_threshold: 0.05
+  max_duplicate_percentage: 0.0
+  correlation_threshold: 0.98
+  drift_pvalue_threshold: 0.05
+
+forecasting:
+  minimum_history_days: 300
+  minimum_zone_observations: 15
+
+marketplace_rules:
+  revenue_tolerance: 0.05
+  kpi_tolerance: 0.10
+  max_surge_multiplier: 10.0
+  min_acceptance_rate: 0.50
+  min_utilization_rate: 0.10
+
+geospatial_bounds:
+  latitude:
+    min: 40.40
+    max: 41.10
+
+  longitude:
+    min: -74.40
+    max: -73.50
