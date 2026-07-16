@@ -3,7 +3,8 @@ from src.ride_demand_forecasting_and_marketplace_optimization.utils.common impor
 from src.ride_demand_forecasting_and_marketplace_optimization.entity.config_entity import (DataIngestionConfig,
                                                                                            DataValidationConfig,
                                                                                            DataPreprocessingConfig,
-                                                                                           FeatureEngineeringConfig)
+                                                                                           FeatureEngineeringConfig,
+                                                                                           FeatureStoreConfig)
 
 
 class ConfigurationManager:
@@ -161,3 +162,47 @@ class ConfigurationManager:
         )    
 
         return feature_engineering_config
+    
+
+    def get_feature_store_config(self):
+
+        config = self.config.feature_store
+
+        create_directories(
+            [config.root_dir]
+        )
+
+
+        return FeatureStoreConfig(
+
+            root_dir=Path(config.root_dir),
+            
+            feature_columns_path=Path(config.feature_columns_path),
+            
+            feature_repo_path=Path(config.feature_repo_path),
+
+            offline_feature_path=Path(config.offline_feature_path),
+
+            registry_path=Path(config.registry_path),
+
+            online_store_path=Path(config.online_store_path),
+
+            feature_store_yaml_path=Path(config.feature_store_yaml_path),
+
+            project_name=config.project_name,
+
+            feature_view_name=config.feature_view_name,
+
+            feature_service_name=config.feature_service_name,
+
+            entity_name=config.entity_name,
+
+            join_key=config.join_key,
+
+            timestamp_column=config.timestamp_column,
+
+            start_date=config.start_date,
+
+            end_date=config.end_date
+        
+        ) 

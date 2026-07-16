@@ -94,3 +94,24 @@ class FeatureEngineeringConfig:
     output_data_path: Path
     feature_report_path: Path
     original_feature_count: int    
+
+from dataclasses import dataclass
+from pathlib import Path
+
+@dataclass
+class FeatureStoreConfig:
+    root_dir: Path
+    feature_columns_path: Path
+    feature_repo_path: Path
+    offline_feature_path: Path
+    registry_path: Path
+    online_store_path: Path
+    feature_store_yaml_path: Path
+    project_name: str
+    feature_view_name: str
+    feature_service_name: str
+    entity_name: str
+    join_key: str
+    timestamp_column: str
+    start_date: str
+    end_date: str    

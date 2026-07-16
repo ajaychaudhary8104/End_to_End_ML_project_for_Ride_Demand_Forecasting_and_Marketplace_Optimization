@@ -3,6 +3,7 @@ from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_01_
 from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_02_data_validation import DataValidationTrainingPipeline
 from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_03_data_preprocessing import DataPreprocessingTrainingPipeline
 from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_04_feature_engineering import FeatureEngineeringTrainingPipeline
+from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_05_feature_store import FeatureStoreTrainingPipeline
 import warnings
 
 
@@ -54,4 +55,14 @@ try:
    logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
 except Exception as e:
         logger.exception(e)
-        raise e        
+        raise e     
+
+STAGE_NAME = "Feature Store stage"
+try:
+   logger.info(f">>>>>>> stage {STAGE_NAME} started <<<<<<")
+   feature_store = FeatureStoreTrainingPipeline()
+   feature_store.main()
+   logger.info(f">>>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
+except Exception as e:
+        logger.exception(e)
+        raise e   

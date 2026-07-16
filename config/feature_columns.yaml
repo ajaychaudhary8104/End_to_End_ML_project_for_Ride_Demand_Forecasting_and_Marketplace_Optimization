@@ -1,0 +1,373 @@
+feature_columns:
+
+  # =====================================================
+  # ENTITY & TARGET CONFIGURATION
+  # =====================================================
+
+  entity_columns:
+    - zone_timestamp_key
+
+  timestamp_column: timestamp
+
+  target_column: ride_requests
+
+  identifier_columns:
+    - zone_id
+    - zone_timestamp_key
+
+  drop_columns:
+    - timestamp
+    - zone_timestamp_key
+
+  # =====================================================
+  # CATEGORICAL FEATURES
+  # =====================================================
+
+  low_cardinality_columns:
+    - zone_type
+    - borough
+
+  high_cardinality_columns:
+    - zone_id
+
+  # =====================================================
+  # FEAST FEATURES
+  # =====================================================
+
+  feast_features:
+
+    # =====================
+    # Base Zone Features
+    # =====================
+
+    - zone_id
+    - zone_type
+    - borough
+
+    - latitude
+    - longitude
+
+    # =====================
+    # Time Features
+    # =====================
+
+    - year
+    - quarter
+    - month
+    - week
+    - day
+    - hour
+    - dayofweek
+    - is_weekend
+
+    - dayofyear
+    - is_month_start
+    - is_month_end
+    - is_quarter_end
+
+    - is_peak_hour
+    - is_business_hour
+    - is_night
+
+    # =====================
+    # Cyclical Features
+    # =====================
+
+    - hour_sin
+    - hour_cos
+
+    - dayofweek_sin
+    - dayofweek_cos
+
+    - month_sin
+    - month_cos
+
+    # =====================
+    # Marketplace Features
+    # =====================
+
+    - active_drivers
+    - available_drivers
+    - busy_drivers
+
+    - acceptance_rate
+    - utilization_rate
+
+    - rider_wait_time
+    - driver_wait_time
+
+    - supply_demand_ratio
+    - marketplace_gap
+    - driver_shortage
+    - marketplace_pressure
+
+    # =====================
+    # Driver Efficiency
+    # =====================
+
+    - rides_per_driver
+    - completion_rate
+    - cancellation_rate
+
+    # =====================
+    # Surge Features
+    # =====================
+
+    - surge_multiplier
+    - surge_gap
+    - surge_x_demand
+    - surge_x_traffic
+
+    # =====================
+    # Revenue Features
+    # =====================
+
+    - avg_fare
+    - avg_tip
+    - revenue
+
+    - revenue_per_request
+    - revenue_per_driver
+    - tip_percentage
+
+    # =====================
+    # Trip Features
+    # =====================
+
+    - avg_trip_distance
+    - avg_trip_duration
+
+    # =====================
+    # Traffic Features
+    # =====================
+
+    - traffic_index
+    - traffic_x_demand
+    - traffic_pressure
+
+    # =====================
+    # Weather Features
+    # =====================
+
+    - temperature
+    - feels_like
+    - humidity
+    - pressure
+    - visibility
+    - rainfall
+    - snowfall
+    - wind_speed
+
+    - temperature_deviation
+    - rain_intensity
+    - weather_severity_score
+
+    # =====================
+    # Event Features
+    # =====================
+
+    - holiday_flag
+    - concert_flag
+    - sports_event_flag
+    - festival_flag
+
+    - any_event
+    - event_intensity
+
+    # =====================
+    # Economic Features
+    # =====================
+
+    - fuel_price
+    - cpi
+    - unemployment_rate
+
+    - fuel_cpi_ratio
+    - economic_stress
+
+    # =====================
+    # Geospatial Aggregates
+    # =====================
+
+    - borough_avg_demand
+    - zone_avg_demand
+
+    # =====================
+    # Demand Lag Features
+    # =====================
+
+    - ride_requests_lag_1
+    - ride_requests_lag_2
+    - ride_requests_lag_3
+    - ride_requests_lag_6
+    - ride_requests_lag_12
+    - ride_requests_lag_24
+    - ride_requests_lag_168
+
+    # =====================
+    # Supply Lag Features
+    # =====================
+
+    - active_drivers_lag_1
+    - active_drivers_lag_24
+
+    - available_drivers_lag_1
+    - available_drivers_lag_24
+
+    # =====================
+    # Rolling Features
+    # =====================
+
+    - ride_requests_roll_mean_3
+    - ride_requests_roll_mean_6
+    - ride_requests_roll_mean_24
+    - ride_requests_roll_std_24
+
+    # =====================
+    # Trend Features
+    # =====================
+
+    - demand_growth_24h
+    - demand_growth_week
+
+    # =====================
+    # Forecasting Features
+    # =====================
+
+    - same_hour_yesterday
+    - same_hour_last_week
+
+  # =====================================================
+  # FEATURE DTYPES
+  # =====================================================
+
+  feature_dtypes:
+
+    zone_id: Int32
+    zone_type: String
+    borough: String
+
+    latitude: Float32
+    longitude: Float32
+
+    year: Int32
+    quarter: Int32
+    month: Int32
+    week: Int32
+    day: Int32
+    hour: Int32
+    dayofweek: Int32
+    is_weekend: Int32
+
+    dayofyear: Int32
+    is_month_start: Int32
+    is_month_end: Int32
+    is_quarter_end: Int32
+
+    is_peak_hour: Int32
+    is_business_hour: Int32
+    is_night: Int32
+
+    hour_sin: Float32
+    hour_cos: Float32
+
+    dayofweek_sin: Float32
+    dayofweek_cos: Float32
+
+    month_sin: Float32
+    month_cos: Float32
+
+    active_drivers: Int32
+    available_drivers: Int32
+    busy_drivers: Int32
+
+    acceptance_rate: Float32
+    utilization_rate: Float32
+
+    rider_wait_time: Float32
+    driver_wait_time: Float32
+
+    supply_demand_ratio: Float32
+    marketplace_gap: Float32
+    driver_shortage: Float32
+    marketplace_pressure: Float32
+
+    rides_per_driver: Float32
+    completion_rate: Float32
+    cancellation_rate: Float32
+
+    surge_multiplier: Float32
+    surge_gap: Float32
+    surge_x_demand: Float32
+    surge_x_traffic: Float32
+
+    avg_fare: Float32
+    avg_tip: Float32
+    revenue: Float32
+
+    revenue_per_request: Float32
+    revenue_per_driver: Float32
+    tip_percentage: Float32
+
+    avg_trip_distance: Float32
+    avg_trip_duration: Float32
+
+    traffic_index: Float32
+    traffic_x_demand: Float32
+    traffic_pressure: Float32
+
+    temperature: Float32
+    feels_like: Float32
+    humidity: Float32
+    pressure: Float32
+    visibility: Float32
+    rainfall: Float32
+    snowfall: Float32
+    wind_speed: Float32
+
+    temperature_deviation: Float32
+    rain_intensity: Float32
+    weather_severity_score: Float32
+
+    holiday_flag: Int32
+    concert_flag: Int32
+    sports_event_flag: Int32
+    festival_flag: Int32
+
+    any_event: Int32
+    event_intensity: Int32
+
+    fuel_price: Float32
+    cpi: Float32
+    unemployment_rate: Float32
+
+    fuel_cpi_ratio: Float32
+    economic_stress: Float32
+
+    borough_avg_demand: Float32
+    zone_avg_demand: Float32
+
+    ride_requests_lag_1: Float32
+    ride_requests_lag_2: Float32
+    ride_requests_lag_3: Float32
+    ride_requests_lag_6: Float32
+    ride_requests_lag_12: Float32
+    ride_requests_lag_24: Float32
+    ride_requests_lag_168: Float32
+
+    active_drivers_lag_1: Float32
+    active_drivers_lag_24: Float32
+
+    available_drivers_lag_1: Float32
+    available_drivers_lag_24: Float32
+
+    ride_requests_roll_mean_3: Float32
+    ride_requests_roll_mean_6: Float32
+    ride_requests_roll_mean_24: Float32
+    ride_requests_roll_std_24: Float32
+
+    demand_growth_24h: Float32
+    demand_growth_week: Float32
+
+    same_hour_yesterday: Float32
+    same_hour_last_week: Float32

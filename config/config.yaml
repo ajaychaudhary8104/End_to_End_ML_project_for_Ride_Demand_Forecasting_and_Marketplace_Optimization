@@ -54,3 +54,35 @@ feature_engineering:
   feature_report_path: artifacts/feature_engineering/feature_report.json 
 
   original_feature_count: 45  
+
+feature_store:
+
+  root_dir: artifacts/feature_store
+  
+  feature_columns_path: config/feature_columns.yaml
+
+  feature_repo_path: src/ride_demand_forecasting_and_marketplace_optimization/feature_repo
+
+  offline_feature_path: artifacts/feature_engineering/featured_data.parquet
+
+  registry_path: src/ride_demand_forecasting_and_marketplace_optimization/feature_repo/registry.db
+
+  online_store_path: src/ride_demand_forecasting_and_marketplace_optimization/feature_repo/online_store.db
+
+  feature_store_yaml_path: src/ride_demand_forecasting_and_marketplace_optimization/feature_repo/feature_store.yaml
+
+  project_name: ride_marketplace_forecasting
+
+  feature_view_name: ride_marketplace_features
+
+  feature_service_name: forecast_service
+
+  entity_name: zone_timestamp
+
+  join_key: zone_timestamp_key
+
+  timestamp_column: timestamp
+
+  start_date: 2022-12-01-T00:00:00
+
+  end_date: 2022-12-31-T23:59:59  
