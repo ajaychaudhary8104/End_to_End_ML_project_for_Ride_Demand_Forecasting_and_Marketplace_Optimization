@@ -1,7 +1,8 @@
 from src.ride_demand_forecasting_and_marketplace_optimization.constants import *
 from src.ride_demand_forecasting_and_marketplace_optimization.utils.common import read_yaml, create_directories
 from src.ride_demand_forecasting_and_marketplace_optimization.entity.config_entity import (DataIngestionConfig,
-                                                                                           DataValidationConfig)
+                                                                                           DataValidationConfig,
+                                                                                           DataPreprocessingConfig)
 
 
 class ConfigurationManager:
@@ -82,4 +83,59 @@ class ConfigurationManager:
         )
 
         return validation_config
+    
+    def get_data_preprocessing_config(self) -> DataPreprocessingConfig:
+
+        config = self.config.data_preprocessing
+
+        schema = self.schema
+
+        create_directories(
+            [config.root_dir]
+        )
+
+        return DataPreprocessingConfig(
+
+            root_dir=Path(
+                config.root_dir
+            ),
+
+            input_data_path=Path(
+                config.input_data_path
+            ),
+
+            output_data_path=Path(
+                config.output_data_path
+            ),
+
+            preprocessing_report_path=Path(
+                config.preprocessing_report_path
+            ),
+
+            target_column=
+            schema.target_column,
+
+            timestamp_column=
+            schema.timestamp_column,
+
+            numerical_ranges= schema.numerical_ranges,
+
+            outlier_method=
+            config.outlier_method,
+
+            outlier_iqr_multiplier=
+            config.outlier_iqr_multiplier,
+
+            numerical_imputation_method=
+            config.numerical_imputation_method,
+
+            categorical_imputation_method=
+            config.categorical_imputation_method,
+
+            optimize_memory=
+            config.optimize_memory,
+
+            save_format=
+            config.save_format
+        ) 
     
