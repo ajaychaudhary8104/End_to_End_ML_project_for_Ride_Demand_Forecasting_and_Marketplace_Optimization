@@ -134,3 +134,12 @@ model_training:
   model_file_path: artifacts/model_training/xgboost_model.pkl
   metrics_file_path: artifacts/model_training/model_metrics.json
   target_column: ride_requests   
+
+model_evaluation:
+  root_dir: artifacts/model_evaluation
+  test_data_path: artifacts/data_transformation/splits/test.parquet
+  model_path: artifacts/model_training/xgboost_model.pkl
+  metric_file_name: artifacts/model_evaluation/model_evaluation_metrics.json
+  target_column: ride_requests
+  mlflow_uri: https://dagshub.com/ajaychaudhary8104/End_to_End_ML_project_for_Ride_Demand_Forecasting_and_Marketplace_Optimization.mlflow  
+  experiment_name: ride_demand_forecasting_and_marketplace_optimization
