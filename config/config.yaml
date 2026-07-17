@@ -125,4 +125,12 @@ data_transformation:
 
   selected_features_path: artifacts/data_transformation/selected_features.pkl
 
-  metadata_path: artifacts/data_transformation/metadata.json    
+  metadata_path: artifacts/data_transformation/metadata.json   
+
+model_training:
+  root_dir: artifacts/model_training
+  train_file_path: artifacts/data_transformation/splits/train.parquet
+  validation_file_path: artifacts/data_transformation/splits/validation.parquet
+  model_file_path: artifacts/model_training/xgboost_model.pkl
+  metrics_file_path: artifacts/model_training/model_metrics.json
+  target_column: ride_requests   
