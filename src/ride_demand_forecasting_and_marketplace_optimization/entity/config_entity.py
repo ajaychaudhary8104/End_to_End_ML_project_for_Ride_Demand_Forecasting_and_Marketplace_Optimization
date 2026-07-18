@@ -171,4 +171,15 @@ class ModelPromotionConfig:
     promote_metric: str
     promote_threshold: float
     archive_existing_versions: bool
-    copy_local_model: bool             
+    copy_local_model: bool    
+
+@dataclass(frozen=True)
+class ModelInferenceConfig:
+    root_dir: Path
+    feature_repo_path: Path
+    feature_service_name: str
+    model_path: Path
+    input_data_path: Path
+    prediction_output_path: Path
+    target_column: str
+    preprocessor_path: Path             

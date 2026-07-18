@@ -8,7 +8,8 @@ from src.ride_demand_forecasting_and_marketplace_optimization.entity.config_enti
                                                                                            DataTransformationConfig,
                                                                                            ModelTrainingConfig,
                                                                                            ModelEvaluationConfig,
-                                                                                           ModelPromotionConfig)
+                                                                                           ModelPromotionConfig,
+                                                                                           ModelInferenceConfig)
 
 
 class ConfigurationManager:
@@ -299,3 +300,22 @@ class ConfigurationManager:
         )
 
         return model_promotion_config   
+    
+
+    def get_model_inference_config(self) -> ModelInferenceConfig:
+        config = self.config.model_inference
+
+        create_directories([config.root_dir])
+
+        model_inference_config = ModelInferenceConfig(
+            root_dir=config.root_dir,
+            feature_repo_path=Path(config.feature_repo_path),
+            feature_service_name=config.feature_service_name,
+            model_path=config.model_path,
+            input_data_path=config.input_data_path,
+            prediction_output_path=config.prediction_output_path,
+            target_column=config.target_column,
+            preprocessor_path=config.preprocessor_path
+        )
+          
+        return model_inference_config

@@ -297,9 +297,9 @@ forecast_service = FeatureService(
         self.apply()
         print(f"Apply Time: {time.time()-start:.2f}s")
 
-        #start = time.time()
-        #self._materialize_features()
-        #print(f"Materialize Time: {time.time()-start:.2f}s")
+        start = time.time()
+        self._materialize_features()
+        print(f"Materialize Time: {time.time()-start:.2f}s")
 
         logger.info(
             "Feature Store Component completed successfully"

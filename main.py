@@ -8,8 +8,8 @@ from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_06_
 from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_07_model_training import ModelTrainingPipeline
 from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_08_model_evaluation import ModelEvaluationPipeline
 from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_09_model_promotion import ModelPromotionPipeline
+from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_10_model_inference import ModelInferencePipeline
 import warnings
-
 
 warnings.filterwarnings(
     "ignore",
@@ -105,6 +105,16 @@ STAGE_NAME = "Model Promotion stage"
 try:
    logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
    model_promotion = ModelPromotionPipeline()
+   model_promotion.main()
+   logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
+except Exception as e:
+        logger.exception(e)
+        raise e
+
+STAGE_NAME = "Model Inference stage"
+try:
+   logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+   model_promotion = ModelInferencePipeline()
    model_promotion.main()
    logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
 except Exception as e:
