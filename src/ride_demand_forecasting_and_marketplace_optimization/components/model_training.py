@@ -92,6 +92,13 @@ class ModelTraining:
                 "num__borough_avg_demand",
                 "num__zone_avg_demand",
                 "num__revenue_per_request"
+                "num__active_drivers",
+                "num__available_drivers",
+                "num__busy_drivers",
+                "num__acceptance_rate",
+                "num__utilization_rate",
+                "num__rider_wait_time",
+                "num__driver_wait_time"
                     ]
         
 
@@ -172,6 +179,16 @@ class ModelTraining:
             verbose=False,
         )
 
+        importance = pd.DataFrame({
+            "feature": X_train.columns,
+            "importance": model.feature_importances_
+        }).sort_values(
+            "importance",
+            ascending=False
+        )
+
+        print(importance.head(20))
+        
         logger.info(
             "Model training completed"
         )

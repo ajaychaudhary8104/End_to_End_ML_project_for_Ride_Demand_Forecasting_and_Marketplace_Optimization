@@ -143,3 +143,16 @@ model_evaluation:
   target_column: ride_requests
   mlflow_uri: https://dagshub.com/ajaychaudhary8104/End_to_End_ML_project_for_Ride_Demand_Forecasting_and_Marketplace_Optimization.mlflow  
   experiment_name: ride_demand_forecasting_and_marketplace_optimization
+
+model_promotion:
+  root_dir: artifacts/model_promotion
+  metrics_file_path: artifacts/model_evaluation/model_evaluation_metrics.json
+  model_file_path: artifacts/model_training/xgboost_model.pkl
+  production_model_path: artifacts/model_promotion/production_model.pkl
+  registered_model_name: RideForecastingModel
+  target_stage: Production
+  mlflow_uri: https://dagshub.com/ajaychaudhary8104/End_to_End_ML_project_for_Ride_Demand_Forecasting_and_Marketplace_Optimization.mlflow
+  promote_metric: wape
+  promote_threshold: 10.0
+  archive_existing_versions: true
+  copy_local_model: true  

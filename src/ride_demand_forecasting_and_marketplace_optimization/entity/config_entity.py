@@ -157,4 +157,18 @@ class ModelEvaluationConfig:
     metric_file_name: Path
     target_column: str
     mlflow_uri: str
-    experiment_name: str        
+    experiment_name: str   
+
+@dataclass(frozen=True)
+class ModelPromotionConfig:
+    root_dir: Path
+    metrics_file_path: Path
+    model_file_path: Path
+    production_model_path: Path
+    registered_model_name: str
+    target_stage: str
+    mlflow_uri: str
+    promote_metric: str
+    promote_threshold: float
+    archive_existing_versions: bool
+    copy_local_model: bool             

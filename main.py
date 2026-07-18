@@ -7,6 +7,7 @@ from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_05_
 from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_06_data_transformation import DataTransformationTrainingPipeline
 from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_07_model_training import ModelTrainingPipeline
 from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_08_model_evaluation import ModelEvaluationPipeline
+from src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_09_model_promotion import ModelPromotionPipeline
 import warnings
 
 
@@ -95,6 +96,16 @@ try:
    logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
    model_evaluation = ModelEvaluationPipeline()
    model_evaluation.main()
+   logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
+except Exception as e:
+        logger.exception(e)
+        raise e
+
+STAGE_NAME = "Model Promotion stage"
+try:
+   logger.info(f">>>>>> stage {STAGE_NAME} started <<<<<<")
+   model_promotion = ModelPromotionPipeline()
+   model_promotion.main()
    logger.info(f">>>>>> stage {STAGE_NAME} completed <<<<<<\n\nx==========x")
 except Exception as e:
         logger.exception(e)

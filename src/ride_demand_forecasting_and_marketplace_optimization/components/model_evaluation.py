@@ -63,6 +63,15 @@ class ModelEvaluation:
         """
         Forecasting evaluation metrics.
         """
+        y_true = np.asarray(
+            y_true,
+            dtype=np.float64
+        )
+
+        y_pred = np.asarray(
+            y_pred,
+            dtype=np.float64
+        )
 
         mae = mean_absolute_error(
             y_true,
@@ -129,6 +138,11 @@ class ModelEvaluation:
             "smape": float(smape),
             "wape": float(wape),
         }
+        
+        print("MAE :", mae)
+        print("MAPE:", mape)
+        print("SMAPE:", smape)
+        print("WAPE:", wape)
 
         return metrics
 
@@ -178,6 +192,13 @@ class ModelEvaluation:
                 "num__borough_avg_demand",
                 "num__zone_avg_demand",
                 "num__revenue_per_request"
+                "num__active_drivers",
+                "num__available_drivers",
+                "num__busy_drivers",
+                "num__acceptance_rate",
+                "num__utilization_rate",
+                "num__rider_wait_time",
+                "num__driver_wait_time"
                     ]
         
 
