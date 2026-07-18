@@ -1,0 +1,129 @@
+stages:
+
+  data_ingestion:
+    cmd: python -m src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_01_data_ingestion
+    deps:
+      - src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_01_data_ingestion.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/components/data_ingestion.py
+      - config/config.yaml
+    outs:
+      - artifacts/data_ingestion/ride_marketplace.parquet
+
+  data_validation:
+    cmd: python -m src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_02_data_validation
+    deps:
+      - src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_02_data_validation.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/components/data_validation.py
+      - config/config.yaml
+      - config/schema.yaml
+      - artifacts/data_ingestion/ride_marketplace.parquet
+    outs:
+      - artifacts/data_validation/status.txt
+      - artifacts/data_validation/validation_report.json
+      - artifacts/data_validation/dataset_statistics.json
+
+  data_preprocessing:
+    cmd: python -m src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_03_data_preprocessing
+    deps:
+      - src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_03_data_preprocessing.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/components/data_preprocessing.py
+      - artifacts/data_ingestion/ride_marketplace.parquet
+      - config/config.yaml
+    outs:
+      - artifacts/data_preprocessing/preprocessed_rides.parquet
+      - artifacts/data_preprocessing/preprocessing_report.json
+
+  feature_engineering:
+    cmd: python -m src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_04_feature_engineering
+    deps:
+      - src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_04_feature_engineering.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/components/feature_engineering.py
+      - artifacts/data_preprocessing/preprocessed_rides.parquet
+      - config/config.yaml
+      - params.yaml
+      - config/schema.yaml
+    outs:
+      - artifacts/feature_engineering/featured_data.parquet
+      - artifacts/feature_engineering/feature_report.json
+
+  feature_store:
+    cmd: python -m src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_05_feature_store
+    deps:
+      - src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_05_feature_store.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/components/feature_store.py
+      - artifacts/feature_engineering/featured_data.parquet
+      - config/config.yaml
+      - config/feature_columns.yaml
+
+  data_transformation:
+    cmd: python -m src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_06_data_transformation
+    deps:
+      - src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_06_data_transformation.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/components/data_transformation.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/transformers/preprocessor_builder.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/transformers/frequency_encoder.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/transformers/feature_manager.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/transformers/feature_selector.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/transformers/imbalance_handler.py
+      - artifacts/feature_engineering/featured_data.parquet
+      - config/config.yaml
+      - config/schema.yaml
+      - params.yaml
+    outs:
+      - artifacts/data_transformation/splits/train.parquet
+      - artifacts/data_transformation/splits/validation.parquet
+      - artifacts/data_transformation/splits/test.parquet
+      - artifacts/data_transformation/preprocessor.pkl
+      - artifacts/data_transformation/feature_names.pkl
+      - artifacts/data_transformation/metadata.json
+
+  model_training:
+    cmd: python -m src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_07_model_training
+    deps:
+      - src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_07_model_training.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/components/model_training.py
+      - artifacts/data_transformation/splits/train.parquet
+      - artifacts/data_transformation/splits/validation.parquet
+      - artifacts/data_transformation/preprocessor.pkl
+      - config/config.yaml
+      - params.yaml
+    outs:
+      - artifacts/model_training/xgboost_model.pkl
+      - artifacts/model_training/model_metrics.json
+
+  model_evaluation:
+    cmd: python -m src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_08_model_evaluation
+    deps:
+      - src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_08_model_evaluation.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/components/model_evaluation.py
+      - artifacts/model_training/xgboost_model.pkl
+      - artifacts/data_transformation/splits/test.parquet
+      - config/config.yaml
+      - params.yaml
+    outs:
+      - artifacts/model_evaluation/model_evaluation_metrics.json
+      - artifacts/model_evaluation/forecast_results.csv
+
+  model_promotion:
+    cmd: python -m src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_09_model_promotion
+    deps:
+      - src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_09_model_promotion.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/components/model_promotion.py
+      - artifacts/model_training/xgboost_model.pkl
+      - artifacts/model_evaluation/model_evaluation_metrics.json
+      - config/config.yaml
+    outs:
+      - artifacts/model_promotion/production_model.pkl
+      - artifacts/model_promotion/promotion_summary.json
+
+  model_inference:
+    cmd: python -m src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_10_model_inference
+    deps:
+      - src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_10_model_inference.py
+      - src/ride_demand_forecasting_and_marketplace_optimization/components/inference.py
+      - artifacts/model_promotion/production_model.pkl
+      - artifacts/data_transformation/preprocessor.pkl
+      - config/config.yaml
+      - inference_sample/inference.parquet
+    outs:
+      - artifacts/inference/predictions.csv

@@ -219,3 +219,6 @@ __marimo__/
 
 data/
 artifacts/
+*.db
+src/ride_demand_forecasting_and_marketplace_optimization/feature_repo/online_store.db
+src/ride_demand_forecasting_and_marketplace_optimization/feature_repo/registry.db

@@ -1,0 +1,392 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python -m 
+      src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_01_data_ingestion
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 2a07c61c8c418eab5fb3116305a061ef
+      size: 5478
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/components/data_ingestion.py
+      hash: md5
+      md5: 3ebffcb5b1ee28615f82da711e75df37
+      size: 1742
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_01_data_ingestion.py
+      hash: md5
+      md5: 4d1e8bd14f6f02d12e9c075d7e51f0f8
+      size: 1037
+    outs:
+    - path: artifacts/data_ingestion/ride_marketplace.parquet
+      hash: md5
+      md5: a87c2a6924178457b9a05b95e06532df
+      size: 16134972
+  data_validation:
+    cmd: python -m 
+      src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_02_data_validation
+    deps:
+    - path: artifacts/data_ingestion/ride_marketplace.parquet
+      hash: md5
+      md5: a87c2a6924178457b9a05b95e06532df
+      size: 16134972
+    - path: config/config.yaml
+      hash: md5
+      md5: 2a07c61c8c418eab5fb3116305a061ef
+      size: 5478
+    - path: config/schema.yaml
+      hash: md5
+      md5: 0f7b6dbc7876b6760116e19e53637522
+      size: 4025
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/components/data_validation.py
+      hash: md5
+      md5: 28548984677f6eead4f4441c0fd65594
+      size: 31975
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_02_data_validation.py
+      hash: md5
+      md5: 82ca6af42836f9c01c5910e3714536be
+      size: 1296
+    outs:
+    - path: artifacts/data_validation/dataset_statistics.json
+      hash: md5
+      md5: 9ea742b7920647c25a1fbd2234d010b2
+      size: 394
+    - path: artifacts/data_validation/status.txt
+      hash: md5
+      md5: 7dcef748d0b4e9d4066a979e4bed3ac5
+      size: 3151
+    - path: artifacts/data_validation/validation_report.json
+      hash: md5
+      md5: 5812519b87f1fb05eca03c79f0c6d53a
+      size: 3159
+  data_preprocessing:
+    cmd: python -m 
+      src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_03_data_preprocessing
+    deps:
+    - path: artifacts/data_ingestion/ride_marketplace.parquet
+      hash: md5
+      md5: a87c2a6924178457b9a05b95e06532df
+      size: 16134972
+    - path: config/config.yaml
+      hash: md5
+      md5: 2a07c61c8c418eab5fb3116305a061ef
+      size: 5478
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/components/data_preprocessing.py
+      hash: md5
+      md5: 1cea65213a9ec65e52a79e7475556a7e
+      size: 20445
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_03_data_preprocessing.py
+      hash: md5
+      md5: 08c9100a128c2814e82569134e95e260
+      size: 1089
+    outs:
+    - path: artifacts/data_preprocessing/preprocessed_rides.parquet
+      hash: md5
+      md5: 4d4a0cd0d725af2cbce1ab9a9f557bc8
+      size: 5889238
+    - path: artifacts/data_preprocessing/preprocessing_report.json
+      hash: md5
+      md5: 63b05e35f3df3aafb6d1369ba09354e9
+      size: 2461
+  feature_engineering:
+    cmd: python -m 
+      src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_04_feature_engineering
+    deps:
+    - path: artifacts/data_preprocessing/preprocessed_rides.parquet
+      hash: md5
+      md5: 4d4a0cd0d725af2cbce1ab9a9f557bc8
+      size: 5889238
+    - path: config/config.yaml
+      hash: md5
+      md5: 2a07c61c8c418eab5fb3116305a061ef
+      size: 5478
+    - path: config/schema.yaml
+      hash: md5
+      md5: 0f7b6dbc7876b6760116e19e53637522
+      size: 4025
+    - path: params.yaml
+      hash: md5
+      md5: e3139ac7188f05af80fa63278696fd90
+      size: 320
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/components/feature_engineering.py
+      hash: md5
+      md5: c17f77f361bdd2eb3196aac9f704b1ed
+      size: 20099
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_04_feature_engineering.py
+      hash: md5
+      md5: 5689c19346d14de8b5e38402c9779f0b
+      size: 1212
+    outs:
+    - path: artifacts/feature_engineering/feature_report.json
+      hash: md5
+      md5: b8442493d08d1c12f1160c4d2a9e05a0
+      size: 76
+    - path: artifacts/feature_engineering/featured_data.parquet
+      hash: md5
+      md5: 8fb611b3cd62c20938a87caf846cebae
+      size: 17666109
+  feature_store:
+    cmd: python -m 
+      src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_05_feature_store
+    deps:
+    - path: artifacts/feature_engineering/featured_data.parquet
+      hash: md5
+      md5: 8fb611b3cd62c20938a87caf846cebae
+      size: 17666109
+    - path: config/config.yaml
+      hash: md5
+      md5: 2a07c61c8c418eab5fb3116305a061ef
+      size: 5478
+    - path: config/feature_columns.yaml
+      hash: md5
+      md5: 30d0480a296aa522ce9bff970519c245
+      size: 7555
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/components/feature_store.py
+      hash: md5
+      md5: fb2bb3d614c91a3adc0db3aa6888acea
+      size: 7043
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_05_feature_store.py
+      hash: md5
+      md5: 8c417d2f80e5aef7a5852a14c0504277
+      size: 1158
+  data_transformation:
+    cmd: python -m 
+      src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_06_data_transformation
+    deps:
+    - path: artifacts/feature_engineering/featured_data.parquet
+      hash: md5
+      md5: 8fb611b3cd62c20938a87caf846cebae
+      size: 17666109
+    - path: config/config.yaml
+      hash: md5
+      md5: 2a07c61c8c418eab5fb3116305a061ef
+      size: 5478
+    - path: config/schema.yaml
+      hash: md5
+      md5: 0f7b6dbc7876b6760116e19e53637522
+      size: 4025
+    - path: params.yaml
+      hash: md5
+      md5: e3139ac7188f05af80fa63278696fd90
+      size: 320
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/components/data_transformation.py
+      hash: md5
+      md5: 742ca5b6fdf0ff1e486083653771c7d7
+      size: 17673
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_06_data_transformation.py
+      hash: md5
+      md5: 9c65b0c902a4010c1c9fc70d4dc47d4c
+      size: 1070
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/transformers/feature_manager.py
+      hash: md5
+      md5: e04d77d4774860c5df545737ffedf2d0
+      size: 361
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/transformers/feature_selector.py
+      hash: md5
+      md5: e6e403b63e03751fe8352238db566d4b
+      size: 526
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/transformers/frequency_encoder.py
+      hash: md5
+      md5: 6c8a96bd96e4dd419fc6f2ab7df5db43
+      size: 780
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/transformers/imbalance_handler.py
+      hash: md5
+      md5: d142b96ec2d480afc9721436e63b1bfc
+      size: 183
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/transformers/preprocessor_builder.py
+      hash: md5
+      md5: f9d79092ddbb1c7a0e3a8f1e90abfdad
+      size: 1653
+    outs:
+    - path: artifacts/data_transformation/feature_names.pkl
+      hash: md5
+      md5: 659a793b768e598a5b27b63e278a34ac
+      size: 3217
+    - path: artifacts/data_transformation/metadata.json
+      hash: md5
+      md5: add616db1bc0e3548a29da22b76bfdc6
+      size: 310
+    - path: artifacts/data_transformation/preprocessor.pkl
+      hash: md5
+      md5: 312f6e08f950f03f8d000f57330d8ebd
+      size: 12310
+    - path: artifacts/data_transformation/splits/test.parquet
+      hash: md5
+      md5: 0bd787dbed9fd24f4224b2416e2a46c4
+      size: 2955292
+    - path: artifacts/data_transformation/splits/train.parquet
+      hash: md5
+      md5: c52547a8079ccd7525fe7639f0b5f611
+      size: 11461208
+    - path: artifacts/data_transformation/splits/validation.parquet
+      hash: md5
+      md5: 311ed194287261c845485a88bff393ab
+      size: 2956752
+  model_training:
+    cmd: python -m 
+      src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_07_model_training
+    deps:
+    - path: artifacts/data_transformation/preprocessor.pkl
+      hash: md5
+      md5: 312f6e08f950f03f8d000f57330d8ebd
+      size: 12310
+    - path: artifacts/data_transformation/splits/train.parquet
+      hash: md5
+      md5: c52547a8079ccd7525fe7639f0b5f611
+      size: 11461208
+    - path: artifacts/data_transformation/splits/validation.parquet
+      hash: md5
+      md5: 311ed194287261c845485a88bff393ab
+      size: 2956752
+    - path: config/config.yaml
+      hash: md5
+      md5: 2a07c61c8c418eab5fb3116305a061ef
+      size: 5478
+    - path: params.yaml
+      hash: md5
+      md5: e3139ac7188f05af80fa63278696fd90
+      size: 320
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/components/model_training.py
+      hash: md5
+      md5: 1571fcfedc74d7a402918da9c0fe3bc2
+      size: 8578
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_07_model_training.py
+      hash: md5
+      md5: e17cdea33ca58b5cebafa17431b4f197
+      size: 986
+    outs:
+    - path: artifacts/model_training/model_metrics.json
+      hash: md5
+      md5: e09c63bdae59e4565609e5be9540581d
+      size: 210
+    - path: artifacts/model_training/xgboost_model.pkl
+      hash: md5
+      md5: 95f395cfeb8e8411169a7f503424fbd5
+      size: 4754418
+  model_evaluation:
+    cmd: python -m 
+      src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_08_model_evaluation
+    deps:
+    - path: artifacts/data_transformation/splits/test.parquet
+      hash: md5
+      md5: 0bd787dbed9fd24f4224b2416e2a46c4
+      size: 2955292
+    - path: artifacts/model_training/xgboost_model.pkl
+      hash: md5
+      md5: 95f395cfeb8e8411169a7f503424fbd5
+      size: 4754418
+    - path: config/config.yaml
+      hash: md5
+      md5: 2a07c61c8c418eab5fb3116305a061ef
+      size: 5478
+    - path: params.yaml
+      hash: md5
+      md5: e3139ac7188f05af80fa63278696fd90
+      size: 320
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/components/model_evaluation.py
+      hash: md5
+      md5: 67dc3682cb26dc9791f36bf4a9657522
+      size: 10724
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_08_model_evaluation.py
+      hash: md5
+      md5: 9ef6bed59633e2a4c6a41a06edc096cc
+      size: 1012
+    outs:
+    - path: artifacts/model_evaluation/forecast_results.csv
+      hash: md5
+      md5: 9070ea441e2bcb4b266a6e376efcda5c
+      size: 977433
+    - path: artifacts/model_evaluation/model_evaluation_metrics.json
+      hash: md5
+      md5: e091af0d6487e8f56d49d97d0d44e44e
+      size: 230
+  model_promotion:
+    cmd: python -m 
+      src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_09_model_promotion
+    deps:
+    - path: artifacts/model_evaluation/model_evaluation_metrics.json
+      hash: md5
+      md5: e091af0d6487e8f56d49d97d0d44e44e
+      size: 230
+    - path: artifacts/model_training/xgboost_model.pkl
+      hash: md5
+      md5: 95f395cfeb8e8411169a7f503424fbd5
+      size: 4754418
+    - path: config/config.yaml
+      hash: md5
+      md5: 2a07c61c8c418eab5fb3116305a061ef
+      size: 5478
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/components/model_promotion.py
+      hash: md5
+      md5: 2243ecaf3c9d18a7dc8af8def030e4b6
+      size: 5129
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_09_model_promotion.py
+      hash: md5
+      md5: 1925a3f15985d5c72fc8b1e2b719171c
+      size: 995
+    outs:
+    - path: artifacts/model_promotion/production_model.pkl
+      hash: md5
+      md5: 95f395cfeb8e8411169a7f503424fbd5
+      size: 4754418
+    - path: artifacts/model_promotion/promotion_summary.json
+      hash: md5
+      md5: 5aa98a4250110227d43ecc15120248ed
+      size: 276
+  model_inference:
+    cmd: python -m 
+      src.ride_demand_forecasting_and_marketplace_optimization.pipeline.stage_10_model_inference
+    deps:
+    - path: artifacts/data_transformation/preprocessor.pkl
+      hash: md5
+      md5: 312f6e08f950f03f8d000f57330d8ebd
+      size: 12310
+    - path: artifacts/model_promotion/production_model.pkl
+      hash: md5
+      md5: 95f395cfeb8e8411169a7f503424fbd5
+      size: 4754418
+    - path: config/config.yaml
+      hash: md5
+      md5: 2a07c61c8c418eab5fb3116305a061ef
+      size: 5478
+    - path: inference_sample/inference.parquet
+      hash: md5
+      md5: 803265914e07d6669d40a2223157210d
+      size: 220116
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/components/inference.py
+      hash: md5
+      md5: aea99a861766476dbab400eaacf76146
+      size: 15922
+    - path: 
+        src/ride_demand_forecasting_and_marketplace_optimization/pipeline/stage_10_model_inference.py
+      hash: md5
+      md5: ccd511bf79c737ec9e6fae03faee9357
+      size: 1091
+    outs:
+    - path: artifacts/inference/predictions.csv
+      hash: md5
+      md5: 118c7bb0112042f255eec3a426f54ddf
+      size: 261006
