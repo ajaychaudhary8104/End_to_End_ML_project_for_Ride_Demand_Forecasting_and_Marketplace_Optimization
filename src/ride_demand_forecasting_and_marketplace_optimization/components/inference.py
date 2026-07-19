@@ -334,6 +334,34 @@ class ModelInference:
 
         df = result_df.copy()
 
+        for col in df.columns:
+            null_count = df[col].isna().sum()
+
+            if null_count > 0:
+                logger.warning(
+                    f"{col} contains {null_count} null values"
+                )
+                
+        numeric_cols = [
+            "forecast_demand",
+            "available_drivers",
+            "rides_per_driver",
+            "rider_wait_time",
+            "avg_fare",
+            "traffic_index",
+            "weather_severity_score",
+            "event_intensity"
+        ]
+
+        for col in numeric_cols:
+            if col not in df.columns:
+                df[col] = 0
+
+            df[col] = pd.to_numeric(
+                df[col],
+                errors="coerce"
+            ).fillna(0)        
+
         # ==================================================
         # DEMAND SUPPLY GAP
         # ==================================================
@@ -499,9 +527,13 @@ class ModelInference:
             f"Running prediction "
             f"for {len(entity_df)} rows"
         )
-        
+
+        # 1. Add this line to explicitly parse the string timestamp into a datetimelike format
+        entity_df["timestamp"] = pd.to_datetime(entity_df["timestamp"])
+
+        # 2. Now your existing string-formatting line will work perfectly
         if "zone_timestamp_key" not in entity_df.columns:
-            entity_df["zone_timestamp_key"] = (entity_df["zone_id"].astype(str) + "_" + entity_df["timestamp" ].dt.strftime("%Y%m%d%H"))
+            entity_df["zone_timestamp_key"] = (entity_df["zone_id"].astype(str) + "_" + entity_df["timestamp"].dt.strftime("%Y%m%d%H"))
 
         feast_df = (
             self.fetch_online_features(

@@ -17,3 +17,15 @@ To modify the pipeline:
 set MLFLOW_TRACKING_URI=https://dagshub.com/ajaychaudhary8104/End_to_End_ML_project_for_Ride_Demand_Forecasting_and_Marketplace_Optimization.mlflow
 set MLFLOW_TRACKING_USERNAME=ajaychaudhary8104
 set MLFLOW_TRACKING_PASSWORD=gangapur8955
+
+###  Start the API locally
+
+```bash
+uvicorn app:app --host 0.0.0.0 --port 8000
+```
+
+Or:
+
+```bash
+python app.py
+```

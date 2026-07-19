@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>
+Ride Demand Forecasting & Marketplace Optimization
+</title>
+
+<link rel="stylesheet" href="/static/css/style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">
+        🚕 RideAI
+    </div>
+
+    <h3>Prediction Inputs</h3>
+
+    <label>Zone ID</label>
+    <select id="zone_id"></select>
+
+    <label>Forecast Timestamp</label>
+    <input type="datetime-local" id="timestamp">
+
+    <button id="forecastBtn">
+        Generate Forecast
+    </button>
+
+</div>
+
+<div class="main-container">
+
+    <div class="topbar">
+
+        <div>
+            <h1>
+                Ride Demand Forecasting &
+                Marketplace Optimization
+            </h1>
+
+            <p>
+                Real-Time Marketplace Intelligence
+            </p>
+        </div>
+
+        <div id="api-status" class="status">
+            Checking...
+        </div>
+
+    </div>
+
+    <!-- KPI SECTION -->
+
+    <div class="kpi-grid">
+
+        <div class="kpi-card">
+            <span>Forecast Demand</span>
+            <h2 id="forecastDemand">-</h2>
+        </div>
+
+        <div class="kpi-card">
+            <span>Available Drivers</span>
+            <h2 id="availableDrivers">-</h2>
+        </div>
+
+        <div class="kpi-card">
+            <span>Driver Gap</span>
+            <h2 id="driverGap">-</h2>
+        </div>
+
+        <div class="kpi-card">
+            <span>Recommended Surge</span>
+            <h2 id="recommendedSurge">-</h2>
+        </div>
+
+        <div class="kpi-card">
+            <span>Wait Time</span>
+            <h2 id="waitTime">-</h2>
+        </div>
+
+        <div class="kpi-card">
+            <span>Forecast Revenue</span>
+            <h2 id="forecastRevenue">-</h2>
+        </div>
+
+    </div>
+
+    <!-- CHARTS -->
+
+    <div class="chart-grid">
+
+        <div class="chart-card">
+            <h3>Demand Forecast</h3>
+            <canvas id="demandChart"></canvas>
+        </div>
+
+        <div class="chart-card">
+            <h3>Marketplace Metrics</h3>
+            <canvas id="marketplaceChart"></canvas>
+        </div>
+
+    </div>
+
+    <!-- MARKETPLACE ANALYTICS -->
+
+    <div class="analytics-grid">
+
+        <div class="info-card">
+            <h4>Marketplace Status</h4>
+            <span id="marketplaceStatus">-</span>
+        </div>
+
+        <div class="info-card">
+            <h4>Supply Ratio</h4>
+            <span id="supplyRatio">-</span>
+        </div>
+
+        <div class="info-card">
+            <h4>Required Drivers</h4>
+            <span id="requiredDrivers">-</span>
+        </div>
+
+        <div class="info-card">
+            <h4>Risk Score</h4>
+            <span id="riskScore">-</span>
+        </div>
+
+        <div class="info-card">
+            <h4>Shortage %</h4>
+            <span id="shortagePct">-</span>
+        </div>
+
+        <div class="info-card">
+            <h4>Zone Type</h4>
+            <span id="zoneType">-</span>
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/static/js/app.js"></script>
+
+</body>
+</html>
