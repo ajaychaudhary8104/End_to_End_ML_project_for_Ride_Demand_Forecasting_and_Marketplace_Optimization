@@ -1,211 +1,490 @@
-let demandChart;
-let marketplaceChart;
+// ==========================================================
+// CONFIG
+// ==========================================================
 
-async function checkHealth(){
+const API_BASE = "";
 
-    const response = await fetch("/health");
+// ==========================================================
+// DOM ELEMENTS
+// ==========================================================
 
-    const data = await response.json();
+const zoneSelect = document.getElementById("zone_id");
+const timestampInput = document.getElementById("timestamp");
+const forecastBtn = document.getElementById("forecastBtn");
+const apiStatus = document.getElementById("api-status");
 
-    const status = document.getElementById("api-status");
+// ==========================================================
+// CHARTS
+// ==========================================================
 
-    if(data.model_loaded){
+let demandChart = null;
+let marketplaceChart = null;
 
-        status.innerHTML="● Connected";
+// ==========================================================
+// INITIALIZATION
+// ==========================================================
 
-        status.style.background="#22c55e";
-    }
-    else{
+document.addEventListener("DOMContentLoaded", async () => {
 
-        status.innerHTML="● Offline";
+    initializeTimestamp();
 
-        status.style.background="#ef4444";
-    }
-}
+    await loadZones();
 
-async function populateZones(){
+    await checkHealth();
 
-    const response = await fetch(
-        "/metadata/zones"
+    initializeCharts();
+
+    forecastBtn.addEventListener(
+        "click",
+        generateForecast
+    );
+});
+
+// ==========================================================
+// TIMESTAMP
+// ==========================================================
+
+function initializeTimestamp() {
+
+    const now = new Date();
+
+    now.setMinutes(
+        now.getMinutes() -
+        now.getTimezoneOffset()
     );
 
-    const data = await response.json();
-
-    const select =
-        document.getElementById("zone_id");
-
-    select.innerHTML = data.zones
-        .map(
-            z =>
-            `<option value="${z}">
-                Zone ${z}
-            </option>`
-        )
-        .join("");
+    timestampInput.value =
+        now.toISOString().slice(0, 16);
 }
 
-function createCharts(){
+// ==========================================================
+// LOAD ZONES
+// ==========================================================
+
+async function loadZones() {
+
+    try {
+
+        const response = await fetch(
+            "/metadata/zones"
+        );
+
+        const data =
+            await response.json();
+
+        zoneSelect.innerHTML = "";
+
+        data.zones.forEach(zone => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = zone;
+
+            option.textContent =
+                `Zone ${zone}`;
+
+            zoneSelect.appendChild(option);
+        });
+
+    } catch (error) {
+
+        console.error(
+            "Failed loading zones:",
+            error
+        );
+
+        for (let i = 1; i <= 263; i++) {
+
+            const option =
+                document.createElement("option");
+
+            option.value = i;
+
+            option.textContent =
+                `Zone ${i}`;
+
+            zoneSelect.appendChild(option);
+        }
+    }
+}
+
+// ==========================================================
+// HEALTH CHECK
+// ==========================================================
+
+async function checkHealth() {
+
+    try {
+
+        const response =
+            await fetch("/health");
+
+        if (!response.ok) {
+            throw new Error();
+        }
+
+        const data =
+            await response.json();
+
+        apiStatus.textContent =
+            "API Online";
+
+        apiStatus.className =
+            "status online";
+
+        console.log(
+            "Health:",
+            data
+        );
+
+    } catch {
+
+        apiStatus.textContent =
+            "API Offline";
+
+        apiStatus.className =
+            "status offline";
+    }
+}
+
+// ==========================================================
+// CHARTS
+// ==========================================================
+
+function initializeCharts() {
+
+    const demandCtx =
+        document
+        .getElementById("demandChart")
+        .getContext("2d");
 
     demandChart = new Chart(
-        document.getElementById("demandChart"),
+        demandCtx,
         {
-            type:"line",
-            data:{
-                labels:["Demand"],
-                datasets:[{
-                    label:"Forecast Demand",
-                    data:[0]
-                }]
+            type: "bar",
+
+            data: {
+
+                labels: [
+                    "Forecast Demand",
+                    "Available Drivers"
+                ],
+
+                datasets: [
+                    {
+                        label: "Marketplace",
+
+                        data: [0, 0]
+                    }
+                ]
+            },
+
+            options: {
+
+                responsive: true,
+
+                maintainAspectRatio: false
             }
         }
     );
 
-    marketplaceChart = new Chart(
-        document.getElementById("marketplaceChart"),
-        {
-            type:"bar",
-            data:{
-                labels:[
-                    "Demand",
-                    "Drivers"
-                ],
-                datasets:[{
-                    label:"Marketplace",
-                    data:[0,0]
-                }]
+    const marketCtx =
+        document
+        .getElementById("marketplaceChart")
+        .getContext("2d");
+
+    marketplaceChart =
+        new Chart(
+            marketCtx,
+            {
+                type: "doughnut",
+
+                data: {
+
+                    labels: [
+                        "Supply Ratio",
+                        "Risk Score"
+                    ],
+
+                    datasets: [
+                        {
+                            data: [1, 0]
+                        }
+                    ]
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false
+                }
             }
-        }
-    );
+        );
 }
 
-document
-.getElementById("forecastBtn")
-.addEventListener(
-    "click",
-    async ()=>{
+// ==========================================================
+// FORECAST
+// ==========================================================
+
+async function generateForecast() {
+
+    try {
+
+        // ----------------------------------
+        // Validation
+        // ----------------------------------
+
+        if (!zoneSelect.value) {
+
+            alert(
+                "Please select a zone."
+            );
+
+            return;
+        }
+
+        if (!timestampInput.value) {
+
+            alert(
+                "Please select a timestamp."
+            );
+
+            return;
+        }
+
+        forecastBtn.disabled = true;
+
+        forecastBtn.innerText =
+            "Generating...";
+
+        // ----------------------------------
+        // Payload
+        // ----------------------------------
 
         const payload = {
 
-            input:{
-
-                zone_id:Number(
-                    document.getElementById(
-                        "zone_id"
-                    ).value
+            zone_id:
+                Number(
+                    zoneSelect.value
                 ),
 
-                timestamp:
-                document.getElementById(
-                    "timestamp"
-                ).value
-            }
+            timestamp:
+                timestampInput.value
         };
+
+        console.log(
+            "Sending Payload:",
+            payload
+        );
+
+        // ----------------------------------
+        // API Call
+        // ----------------------------------
 
         const response =
             await fetch(
                 "/forecast",
                 {
-                    method:"POST",
-                    headers:{
+                    method: "POST",
+
+                    headers: {
                         "Content-Type":
                         "application/json"
                     },
-                    body:JSON.stringify(
+
+                    body:
+                    JSON.stringify(
                         payload
                     )
                 }
             );
 
-        const result =
+        const data =
             await response.json();
 
-        document.getElementById(
-            "forecastDemand"
-        ).innerHTML =
-        result.forecast_demand.toFixed(0);
+        console.log(
+            "Response:",
+            data
+        );
 
-        document.getElementById(
-            "availableDrivers"
-        ).innerHTML =
-        result.available_drivers.toFixed(0);
+        if (!response.ok) {
 
-        document.getElementById(
-            "driverGap"
-        ).innerHTML =
-        result.driver_gap.toFixed(0);
+            throw new Error(
+                JSON.stringify(data)
+            );
+        }
 
-        document.getElementById(
-            "recommendedSurge"
-        ).innerHTML =
-        result.recommended_surge.toFixed(2);
+        updateDashboard(data);
 
-        document.getElementById(
-            "waitTime"
-        ).innerHTML =
-        result.predicted_wait_time.toFixed(1);
+    } catch (error) {
 
-        document.getElementById(
-            "forecastRevenue"
-        ).innerHTML =
-        "$"+result.forecast_revenue.toFixed(0);
+        console.error(error);
 
-        document.getElementById(
-            "marketplaceStatus"
-        ).innerHTML =
-        result.marketplace_status;
+        alert(
+            "Forecast failed.\n\nCheck browser console."
+        );
 
-        document.getElementById(
-            "supplyRatio"
-        ).innerHTML =
-        result.forecast_supply_ratio.toFixed(2);
+    } finally {
 
-        document.getElementById(
-            "requiredDrivers"
-        ).innerHTML =
-        result.required_drivers;
+        forecastBtn.disabled = false;
 
-        document.getElementById(
-            "riskScore"
-        ).innerHTML =
-        result.risk_score.toFixed(2);
-
-        document.getElementById(
-            "shortagePct"
-        ).innerHTML =
-        (
-            result.shortage_pct*100
-        ).toFixed(0)+"%";
-
-        document.getElementById(
-            "zoneType"
-        ).innerHTML =
-        result.zone_type;
-
-        demandChart.data.datasets[0]
-        .data=[
-            result.forecast_demand
-        ];
-
-        demandChart.update();
-
-        marketplaceChart
-        .data.datasets[0]
-        .data=[
-            result.forecast_demand,
-            result.available_drivers
-        ];
-
-        marketplaceChart.update();
+        forecastBtn.innerText =
+            "Generate Forecast";
     }
-);
-
-async function init(){
-
-    await checkHealth();
-
-    await populateZones();
-
-    createCharts();
 }
 
-init();
+// ==========================================================
+// DASHBOARD
+// ==========================================================
+
+function updateDashboard(data) {
+
+    setValue(
+        "forecastDemand",
+        formatNumber(
+            data.forecast_demand
+        )
+    );
+
+    setValue(
+        "availableDrivers",
+        formatNumber(
+            data.available_drivers
+        )
+    );
+
+    setValue(
+        "driverGap",
+        formatNumber(
+            data.driver_gap
+        )
+    );
+
+    setValue(
+        "recommendedSurge",
+        `${data.recommended_surge}x`
+    );
+
+    setValue(
+        "waitTime",
+        `${Number(
+            data.predicted_wait_time
+        ).toFixed(1)} min`
+    );
+
+    setValue(
+        "forecastRevenue",
+        formatCurrency(
+            data.forecast_revenue
+        )
+    );
+
+    setValue(
+        "marketplaceStatus",
+        data.marketplace_status
+    );
+
+    setValue(
+        "supplyRatio",
+        Number(
+            data.forecast_supply_ratio
+        ).toFixed(2)
+    );
+
+    setValue(
+        "requiredDrivers",
+        data.required_drivers
+    );
+
+    setValue(
+        "riskScore",
+        `${(
+            data.risk_score * 100
+        ).toFixed(1)}%`
+    );
+
+    setValue(
+        "shortagePct",
+        `${(
+            data.shortage_pct * 100
+        ).toFixed(1)}%`
+    );
+
+    setValue(
+        "zoneType",
+        data.risk_score > 0.7
+            ? "High Risk Zone"
+            : "Normal Zone"
+    );
+
+    updateCharts(data);
+}
+
+// ==========================================================
+// CHART UPDATE
+// ==========================================================
+
+function updateCharts(data) {
+
+    demandChart.data.datasets[0].data = [
+
+        Number(
+            data.forecast_demand
+        ),
+
+        Number(
+            data.available_drivers
+        )
+    ];
+
+    demandChart.update();
+
+    marketplaceChart.data.datasets[0].data = [
+
+        Number(
+            data.forecast_supply_ratio
+        ),
+
+        Number(
+            data.risk_score
+        )
+    ];
+
+    marketplaceChart.update();
+}
+
+// ==========================================================
+// HELPERS
+// ==========================================================
+
+function setValue(id, value) {
+
+    const element =
+        document.getElementById(id);
+
+    if (element) {
+        element.textContent = value;
+    }
+}
+
+function formatNumber(value) {
+
+    return Number(
+        value || 0
+    ).toLocaleString();
+}
+
+function formatCurrency(value) {
+
+    return "$" +
+        Number(
+            value || 0
+        ).toLocaleString(
+            undefined,
+            {
+                maximumFractionDigits: 2
+            }
+        );
+}

@@ -29,3 +29,10 @@ Or:
 ```bash
 python app.py
 ```
+
+Docker build and run
+
+```bash
+docker build -t ride-forecasting-app .
+docker run -p 8000:8000 ride-forecasting-app
+```

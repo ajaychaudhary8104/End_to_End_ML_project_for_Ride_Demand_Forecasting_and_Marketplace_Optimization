@@ -1,0 +1,155 @@
+# =========================
+# Git
+# =========================
+.git
+.gitignore
+
+# =========================
+# GitHub
+# =========================
+.github/
+
+# =========================
+# Python cache
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+
+# =========================
+# Virtual environments
+# =========================
+venv/
+env/
+ENV/
+.venv/
+
+# =========================
+# Jupyter Notebook
+# =========================
+.ipynb_checkpoints/
+*.ipynb
+
+# =========================
+# Logs
+# =========================
+logs/
+*.log
+
+# =========================
+# Environment variables
+# =========================
+.env
+.env.*
+
+# =========================
+# Testing & Linting
+# =========================
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# =========================
+# Coverage reports
+# =========================
+htmlcov/
+.coverage
+coverage.xml
+
+# =========================
+# Build files
+# =========================
+build/
+dist/
+*.egg-info/
+
+# =========================
+# DVC
+# =========================
+.dvc/
+*.dvc
+
+# =========================
+# MLflow
+# =========================
+mlruns/
+
+# =========================
+# IDE settings
+# =========================
+.vscode/
+.idea/
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Temporary files
+# =========================
+tmp/
+temp/
+
+# =========================
+# Docker
+# =========================
+docker-compose.yml
+
+# =========================
+# Terraform
+# =========================
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# =========================
+# AWS credentials
+# =========================
+.aws/
+
+# =========================
+# ML Artifacts & Data
+# =========================
+models/
+data/
+research/
+model_evaluation_docs/
+
+# =========================
+# Serialized Models
+# =========================
+*.joblib
+*.h5
+*.onnx
+
+# =========================
+# Datasets
+# =========================
+*.csv
+*.xlsx
+*.parquet
+
+# =========================
+# Streamlit / FastAPI cache
+# =========================
+.streamlit/
+.cache/
+
+# =========================
+# Misc
+# =========================
+*.tmp
+*.bak
+
+.conda/
+.vscode/
+
+mlruns/
+logs/
+data/
+notebooks/
+research/
+inference_sample/
+artifacts/
