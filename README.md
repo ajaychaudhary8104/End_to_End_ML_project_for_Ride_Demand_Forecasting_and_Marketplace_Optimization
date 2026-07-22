@@ -1,237 +1,737 @@
-# End_to_End_ML_project_for_Ride_Demand_Forecasting_and_Marketplace_Optimization
+# 🚕 Ride Demand Forecasting & Marketplace Optimization Platform
 
-# Configuration Workflow
+<p align="center">
 
-To modify the pipeline:
+<img src="https://img.shields.io/badge/Python-3.11-blue?style=for-the-badge&logo=python">
+<img src="https://img.shields.io/badge/FastAPI-Production-green?style=for-the-badge&logo=fastapi">
+<img src="https://img.shields.io/badge/XGBoost-Forecasting-orange?style=for-the-badge">
+<img src="https://img.shields.io/badge/Feast-Feature%20Store-purple?style=for-the-badge">
+<img src="https://img.shields.io/badge/DVC-ML%20Pipeline-red?style=for-the-badge&logo=dvc">
+<img src="https://img.shields.io/badge/Docker-Containerized-blue?style=for-the-badge&logo=docker">
+<img src="https://img.shields.io/badge/Kubernetes-Deployment-326CE5?style=for-the-badge&logo=kubernetes">
 
-1. Update `config/config.yaml` - Set paths and parameters
-2. Update `params.yaml` - Modify hyperparameters
-3. Update `entity/config_entity.py` - Define configuration entities
-4. Update `config/configuration.py` - Implement configuration manager
-5. Update components in `components/` - Modify pipeline stages
-6. Update pipeline stages in `pipeline/` - Update pipeline logic
-7. Update `main.py` - Execute the pipeline
-8. Update `dvc.yaml` - Define DVC pipeline stages
+</p>
+
+<p align="center">
+<b>An end-to-end MLOps platform for predicting ride demand and optimizing marketplace decisions using machine learning, feature stores, automated pipelines, and production-grade deployment architecture.</b>
+</p>
+
+---
+
+# 📌 Project Overview
+
+Modern ride-hailing platforms must continuously balance:
+
+* Rider demand
+* Driver availability
+* Surge pricing
+* Waiting time
+* Revenue optimization
+* Marketplace efficiency
+
+This project builds a complete production-oriented ML platform that forecasts future ride demand and generates marketplace optimization insights.
+
+The system covers the complete machine learning lifecycle:
+
+```
+Data Ingestion
+      ↓
+Data Validation
+      ↓
+Data Processing
+      ↓
+Feature Engineering
+      ↓
+Feature Store (Feast)
+      ↓
+Model Training
+      ↓
+Model Evaluation
+      ↓
+Model Promotion
+      ↓
+Real-Time Inference API
+      ↓
+Marketplace Dashboard
+```
+
+---
+
+# 🎯 Business Problem
+
+Ride marketplaces face a highly dynamic environment.
+
+A mismatch between demand and supply creates:
+
+| Problem                   | Business Impact          |
+| ------------------------- | ------------------------ |
+| High demand + low drivers | Long rider wait time     |
+| Excess drivers            | Driver idle time         |
+| Poor forecasting          | Revenue loss             |
+| Incorrect pricing         | Customer dissatisfaction |
+| Supply imbalance          | Marketplace inefficiency |
+
+This platform solves these challenges by predicting:
+
+* Future ride demand
+* Driver supply gaps
+* Marketplace risk levels
+* Surge pricing recommendations
+* Expected waiting time
+* Revenue opportunities
+
+---
+
+# 🚀 Key Features
+
+## Machine Learning Pipeline
+
+✅ Complete automated ML workflow
+
+* Data ingestion
+* Schema validation
+* Data quality checks
+* Feature generation
+* Model training
+* Model evaluation
+* Model registry workflow
+* Production model promotion
+
+---
+
+## Forecasting Engine
+
+The forecasting system uses machine learning models to predict:
+
+* Zone-level demand
+* Hourly demand patterns
+* Marketplace pressure
+* Supply-demand imbalance
+
+Supported models:
+
+* XGBoost Regressor
+* LightGBM
+* CatBoost
+* Scikit-learn models
+
+---
+
+# 🏗️ Production Architecture
+
+```
+                         Users
+                           |
+                           |
+                    FastAPI Prediction API
+                           |
+             +-------------+-------------+
+             |                           |
+        Feast Feature Store        Model Artifact Store
+             |                           |
+             |                           |
+       Online Features              Production Model
+             |
+             |
+     Feature Engineering Layer
+             |
+             |
+      Data Processing Pipeline
+             |
+             |
+       Raw Ride Marketplace Data
 
 
-set MLFLOW_TRACKING_URI=https://dagshub.com/ajaychaudhary8104/End_to_End_ML_project_for_Ride_Demand_Forecasting_and_Marketplace_Optimization.mlflow
-set MLFLOW_TRACKING_USERNAME=ajaychaudhary8104
-set MLFLOW_TRACKING_PASSWORD=gangapur8955
+Infrastructure:
 
-###  Start the API locally
+Docker
+   |
+Kubernetes
+   |
+AWS Cloud
+   |
+S3 Artifact Storage
+```
+
+---
+
+# 🛠️ Technology Stack
+
+## Programming
+
+* Python 3.11
+
+## Machine Learning
+
+* XGBoost
+* LightGBM
+* CatBoost
+* Scikit-learn
+* Pandas
+* NumPy
+
+## MLOps
+
+* DVC
+* MLflow
+* DagsHub
+* Feast Feature Store
+
+## Backend
+
+* FastAPI
+* Uvicorn
+* Pydantic
+
+## Infrastructure
+
+* Docker
+* Kubernetes
+* AWS S3
+
+## Monitoring
+
+* Prometheus metrics
+* API health monitoring
+
+---
+
+# 📂 Repository Structure
+
+```
+Ride-Demand-Forecasting/
+
+│
+├── app.py
+├── main.py
+├── Dockerfile
+├── dvc.yaml
+├── params.yaml
+├── requirements.txt
+│
+├── config/
+│   ├── config.yaml
+│   ├── schema.yaml
+│   └── feature_columns.yaml
+│
+├── artifacts/
+│   ├── data_ingestion/
+│   ├── data_validation/
+│   ├── feature_engineering/
+│   ├── feature_store/
+│   ├── model_training/
+│   ├── model_evaluation/
+│   └── model_promotion/
+│
+├── src/
+│   └── ride_demand_forecasting/
+│       ├── components/
+│       ├── pipeline/
+│       ├── feature_repo/
+│       ├── transformers/
+│       └── utils/
+│
+├── templates/
+│
+├── static/
+│
+└── k8s/
+    └── deployment.yaml
+```
+
+---
+
+# 🔄 ML Pipeline Workflow
+
+## 1. Data Ingestion
+
+Responsible for:
+
+* Downloading raw ride marketplace data
+* Managing input datasets
+* Creating reproducible data versions
+
+Output:
+
+```
+artifacts/data_ingestion/
+```
+
+---
+
+## 2. Data Validation
+
+Checks:
+
+* Missing values
+* Data types
+* Schema mismatch
+* Feature drift
+
+Configuration:
+
+```
+config/schema.yaml
+```
+
+---
+
+## 3. Feature Engineering
+
+Generated features include:
+
+### Time Features
+
+* Hour
+* Day
+* Weekday
+* Month
+* Holiday indicators
+
+### Demand Features
+
+* Historical demand
+* Lag features
+* Rolling averages
+* Demand trends
+
+### Marketplace Features
+
+* Available drivers
+* Driver-demand ratio
+* Supply gap
+* Surge indicators
+
+### External Features
+
+* Weather
+* Events
+* Economic indicators
+
+---
+
+# 🧠 Feature Store Architecture
+
+This project integrates Feast for feature management.
+
+Benefits:
+
+✅ Consistent training and inference features
+
+✅ Avoids training-serving skew
+
+✅ Online feature retrieval
+
+✅ Feature version management
+
+Feature flow:
+
+```
+Offline Store
+
+Training Data
+      |
+      |
+ Feast Registry
+      |
+      |
+Online Store
+
+Real-Time Prediction
+```
+
+---
+
+# 🤖 Model Training
+
+Training pipeline automatically:
+
+* Loads engineered features
+* Performs transformation
+* Splits train/validation/test data
+* Trains forecasting model
+* Saves artifacts
+
+Example configuration:
+
+```yaml
+model:
+  algorithm: XGBoost
+  n_estimators: 400
+  max_depth: 20
+  learning_rate: 0.1
+```
+
+---
+
+# 📊 Model Evaluation
+
+Business-focused metrics:
+
+| Metric | Purpose                             |
+| ------ | ----------------------------------- |
+| WAPE   | Primary business forecasting metric |
+| MAE    | Average prediction error            |
+| RMSE   | Large error detection               |
+| MAPE   | Percentage error monitoring         |
+| SMAPE  | Forecast stability                  |
+| R²     | Model quality analysis              |
+
+Evaluation artifacts:
+
+```
+artifacts/model_evaluation/
+```
+
+---
+
+# 🔥 Production Inference API
+
+Built using FastAPI.
+
+Start locally:
 
 ```bash
 uvicorn app:app --host 0.0.0.0 --port 8000
 ```
 
-Or:
+API Documentation:
 
-```bash
-python app.py
+```
+http://localhost:8000/docs
 ```
 
-Docker build and run
+---
 
-```bash
-docker build -t ride-forecasting-app .
-docker run -p 8000:8000 ride-forecasting-app
+# API Endpoints
+
+## Health Check
+
+```
+GET /health
 ```
 
-# AWS CI/CD Deployment with GitHub Actions
+## Single Forecast
 
-## Step 1: Login to AWS Console
-
-Go to:
-
-[AWS Console](https://aws.amazon.com/console/?utm_source=chatgpt.com)
-
----
-
-# Step 2: Create IAM User for Deployment
-
-Go to:
-
-* IAM → Users → Create User
-
-## Required Permissions
-
-Attach these policies:
-
-* `AmazonEC2FullAccess`
-* `AmazonEC2ContainerRegistryFullAccess`
-* `AmazonS3FullAccess`
-
-## Purpose of These Permissions
-
-### EC2 Access
-
-Used to manage virtual machines.
-
-### ECR Access
-
-Used to store Docker images in AWS Elastic Container Registry.
-
----
-
-# CI/CD Deployment Flow
-
-1. Build Docker image from source code
-2. Push Docker image to Amazon ECR
-3. Launch EC2 instance
-4. Pull Docker image from ECR inside EC2
-5. Run Docker container on EC2
-
----
-
-# Step 3: Create ECR Repository
-
-Go to:
-
-* Elastic Container Registry (ECR)
-* Create Repository
-
-Example Repository URI:
-
-```bash
-577124149610.dkr.ecr.us-east-1.amazonaws.com/ride-forecasting
+```
+POST /forecast
 ```
 
-Save this URI for GitHub Secrets.
+Example:
+
+```json
+{
+ "zone_id":12,
+ "timestamp":"2024-12-01T08:00:00"
+}
+```
+
+## Batch Forecast
+
+```
+POST /forecast/batch
+```
+
+## Metadata
+
+```
+GET /metadata/zones
+```
 
 ---
 
-# Step 4: Launch EC2 Instance
+# 📈 Marketplace Optimization Output
 
-Recommended Configuration:
+The system generates:
 
-* Ubuntu Server 26.04 LTS
-* t3.medium or higher
-* Minimum 20GB storage
+## Demand Forecast
 
-Allow These Inbound Rules:
+Predicted ride requests
 
-| Type       | Port |
-| ---------- | ---- |
-| SSH        | 22   |
-| HTTP       | 80   |
-| HTTPS      | 443  |
-| Custom TCP | 8000 |
+## Supply Gap
+
+```
+Demand - Available Drivers
+```
+
+## Surge Recommendation
+
+Dynamic pricing recommendation
+
+## Marketplace Risk
+
+Identifies:
+
+* Driver shortage
+* Low utilization
+* High waiting time zones
 
 ---
 
-# Step 5: Install Docker on EC2
+# 🐳 Docker Deployment
 
-Connect to EC2:
+Build image:
 
 ```bash
-ssh -i key.pem ubuntu@<EC2_PUBLIC_IP>
+docker build -t ride-demand-api .
 ```
 
 Run:
 
 ```bash
-sudo apt-get update -y
-
-sudo apt-get upgrade -y
-```
-
-Install Docker:
-
-```bash
-curl -fsSL https://get.docker.com -o get-docker.sh
-
-sudo sh get-docker.sh
-```
-
-Add Ubuntu user to Docker group:
-
-```bash
-sudo usermod -aG docker ubuntu
-```
-
-Activate group changes:
-
-```bash
-newgrp docker
-```
-
-Verify Docker:
-
-```bash
-docker --version
+docker run -p 8000:8000 ride-demand-api
 ```
 
 ---
 
-# Step 6: Configure EC2 as GitHub Self-Hosted Runner
+# ☸️ Kubernetes Deployment
 
-Go to your GitHub repository:
+Deployment includes:
 
-```text
-Settings → Actions → Runners → New Self-hosted Runner
-```
+* Multiple replicas
+* Health probes
+* Resource limits
+* Environment configuration
 
-Choose:
-
-* Linux
-* x64
-
-Run all commands provided by GitHub one-by-one on EC2.
-
-Example:
+Deploy:
 
 ```bash
-mkdir actions-runner && cd actions-runner
-
-curl -o actions-runner-linux-x64.tar.gz -L https://github.com/actions/runner/releases/download/v2.317.0/actions-runner-linux-x64-2.317.0.tar.gz
-
-tar xzf ./actions-runner-linux-x64.tar.gz
+kubectl apply -f k8s/deployment.yaml
 ```
 
-Configure runner:
+Check:
 
 ```bash
-./config.sh --url https://github.com/<username>/<repo> --token <TOKEN>
-```
-
-Start runner:
-
-```bash
-./run.sh
-```
-
-For background service:
-
-```bash
-sudo ./svc.sh install
-
-sudo ./svc.sh start
+kubectl get pods
 ```
 
 ---
 
-# Step 7: Configure GitHub Secrets
+# ☁️ AWS Cloud Integration
 
-Go to:
+Supported AWS services:
 
-```text
-Repository → Settings → Secrets and variables → Actions
+## Amazon S3
+
+Used for:
+
+* Model artifacts
+* Feature files
+* Pipeline outputs
+
+## Kubernetes / EKS
+
+Used for:
+
+* API deployment
+* Horizontal scaling
+* Production serving
+
+---
+
+# 📦 Artifact Management
+
+Generated artifacts:
+
+```
+artifacts/
+
+├── preprocessing/
+├── feature_store/
+├── models/
+├── evaluation/
+└── inference/
 ```
 
-Add:
+Production model:
 
-```bash
-AWS_ACCESS_KEY_ID=
-
-AWS_SECRET_ACCESS_KEY=
-
-AWS_DEFAULT_REGION=us-east-1
-
-AWS_ECR_LOGIN_URI=
-
-ECR_REPOSITORY_NAME=
+```
+artifacts/model_promotion/production_model.pkl
 ```
 
 ---
 
-C:\Tools\eksctl.exe create cluster --name ride-demand-cluster --region us-east-1 --nodegroup-name worker-nodes   --node-type t3.medium --nodes 2 --nodes-min 1 --nodes-max 3 --managed
+# 🔬 Experiment Tracking
+
+MLflow integration provides:
+
+* Experiment tracking
+* Parameter logging
+* Metric comparison
+* Model versioning
+
+Tracked:
+
+* Model parameters
+* Training metrics
+* Evaluation results
+
+---
+
+# 🔁 CI/CD Workflow
+
+Production workflow:
+
+```
+Developer Push
+       |
+       ↓
+GitHub Actions
+       |
+       ↓
+Run Tests
+       |
+       ↓
+Build Docker Image
+       |
+       ↓
+Push Image Registry
+       |
+       ↓
+Deploy Kubernetes Service
+       |
+       ↓
+Monitor Production API
+```
+
+---
+
+# 📊 Monitoring
+
+The API exposes Prometheus metrics:
+
+Examples:
+
+* Request count
+* Latency
+* Errors
+* Prediction requests
+
+Health endpoints:
+
+```
+GET /health/live
+
+GET /health/ready
+```
+
+---
+
+# ⚙️ Installation
+
+Clone:
+
+```bash
+git clone https://github.com/ajaychaudhary8104/End_ML_project_for_Ride_Demand_Forecasting_and_Marketplace_Optimization.git
+```
+
+Create environment:
+
+```bash
+python -m venv .venv
+
+.venv\Scripts\activate
+```
+
+Install:
+
+```bash
+pip install -r requirements.txt
+
+pip install -e .
+```
+
+---
+
+# ▶️ Run Complete Pipeline
+
+Using DVC:
+
+```bash
+dvc repro
+```
+
+or:
+
+```bash
+python main.py
+```
+
+Start API:
+
+```bash
+uvicorn app:app --reload
+```
+
+---
+
+# 🧪 Development Workflow
+
+Recommended workflow:
+
+```
+Modify Code
+    |
+Run Pipeline
+    |
+Validate Data
+    |
+Train Model
+    |
+Evaluate Metrics
+    |
+Promote Model
+    |
+Deploy API
+```
+
+---
+
+# 🌟 Production Readiness Checklist
+
+✅ Modular ML pipeline
+
+✅ Reproducible experiments
+
+✅ Feature store integration
+
+✅ Model versioning
+
+✅ API serving
+
+✅ Docker deployment
+
+✅ Kubernetes manifests
+
+✅ Cloud artifact storage
+
+✅ Monitoring support
+
+---
+
+# 👨‍💻 Author
+
+**Ajay Chaudhary**
+
+Machine Learning Engineer | MLOps Enthusiast
+
+GitHub:
+
+https://github.com/ajaychaudhary8104
+
+LinkedIn:
+
+https://www.linkedin.com/in/ajay-chaudhary-b2965b327/
+
+---
+
+# 📜 License
+
+MIT License
+
+---
+
+# ⭐ If you find this project useful
+
+Give it a ⭐ on GitHub and feel free to explore, improve, and contribute.
+
