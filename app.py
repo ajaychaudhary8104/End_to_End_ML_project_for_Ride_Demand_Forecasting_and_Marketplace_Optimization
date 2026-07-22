@@ -4,6 +4,7 @@ from typing import List, Dict, Any, Optional
 
 import pandas as pd
 import uvicorn
+import subprocess
 
 from fastapi import (
     FastAPI,
@@ -161,6 +162,15 @@ async def lifespan(app: FastAPI):
 
         logger.info(
             "Initializing Model Inference..."
+        )
+
+        subprocess.run(
+            [
+                "feast",
+                "apply"
+            ],
+            cwd="src/ride_demand_forecasting_and_marketplace_optimization/feature_repo",
+            check=True
         )
         
         inference = initialize_inference()
