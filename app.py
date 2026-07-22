@@ -43,6 +43,8 @@ from src.ride_demand_forecasting_and_marketplace_optimization.components.inferen
 )
 from src.ride_demand_forecasting_and_marketplace_optimization.utils.s3_loader import download_artifacts
 
+from prometheus_fastapi_instrumentator import Instrumentator
+
 # ==========================================================
 # PATHS
 # ==========================================================
@@ -221,6 +223,8 @@ app = FastAPI(
 
     redoc_url="/api/redoc"
 )
+
+Instrumentator().instrument(app).expose(app)
 
 # ==========================================================
 # MIDDLEWARE
