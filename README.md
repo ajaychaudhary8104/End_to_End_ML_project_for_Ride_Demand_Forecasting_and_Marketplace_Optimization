@@ -233,3 +233,5 @@ ECR_REPOSITORY_NAME=
 ```
 
 ---
+
+C:\Tools\eksctl.exe create cluster --name ride-demand-cluster --region us-east-1 --nodegroup-name worker-nodes   --node-type t3.medium --nodes 2 --nodes-min 1 --nodes-max 3 --managed

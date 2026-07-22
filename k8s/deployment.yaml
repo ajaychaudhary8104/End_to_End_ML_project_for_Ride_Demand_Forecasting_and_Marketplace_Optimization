@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+
+metadata:
+  name: ride-demand-api
+
+spec:
+  replicas: 2
+
+  selector:
+    matchLabels:
+      app: ride-demand-api
+
+  template:
+    metadata:
+      labels:
+        app: ride-demand-api
+
+    spec:
+      containers:
+      - name: ride-demand-api
+
+        image: IMAGE_URI
+
+        imagePullPolicy: Always
+
+        ports:
+        - containerPort: 8000
+
+        env:
+        - name: AWS_DEFAULT_REGION
+          value: us-east-1
+
+        - name: S3_BUCKET_NAME
+          value: ride-forecasting-bucket-8104
+
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
