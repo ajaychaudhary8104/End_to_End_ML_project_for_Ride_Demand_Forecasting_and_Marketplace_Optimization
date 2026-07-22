@@ -161,8 +161,8 @@ model_inference:
   root_dir: artifacts/inference
   feature_repo_path: src/ride_demand_forecasting_and_marketplace_optimization/feature_repo
   feature_service_name: forecast_service
-  model_path: deployment/production_model.pkl
+  model_path: artifacts/model_promotion/production_model.pkl
   input_data_path: inference_sample/inference.parquet
   prediction_output_path: artifacts/inference/predictions.csv
   target_column: ride_requests
-  preprocessor_path: deployment/preprocessor.pkl
+  preprocessor_path: artifacts/data_transformation/preprocessor.pkl
