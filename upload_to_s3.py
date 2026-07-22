@@ -8,6 +8,7 @@ S3_BUCKET = "ride-forecasting-bucket-8104"
 FILES_TO_UPLOAD = [
     "artifacts/data_transformation/preprocessor.pkl",
     "artifacts/data_transformation/feature_names.pkl",
+    "artifacts/feature_engineering/featured_data.parquet",
     "artifacts/model_promotion/production_model.pkl"
 ]
 

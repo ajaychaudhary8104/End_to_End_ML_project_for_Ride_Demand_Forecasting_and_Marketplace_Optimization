@@ -11,25 +11,30 @@ RUN apt-get update && \
     apt-get install -y --no-install-recommends \
         gcc \
         g++ \
-        build-essential && \
+        build-essential \
+        curl \
+        unzip && \
     rm -rf /var/lib/apt/lists/*
 
-# Install dependencies first (cached layer)
-COPY requirements-prod.txt .
+# AWS CLI (needed for Feast + S3 debugging)
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" \
+      -o "awscliv2.zip" && \
+    unzip awscliv2.zip && \
+    ./aws/install && \
+    rm -rf aws awscliv2.zip
 
+COPY requirements-prod.txt .
 
 RUN pip install --upgrade pip setuptools wheel && \
     pip install -r requirements-prod.txt
 
-# Copy application
 COPY . .
 
-# Install local package
 RUN pip install .
 
-# Create non-root user
 RUN useradd -m -u 1000 appuser && \
     mkdir -p /app/logs && \
+    mkdir -p /app/feast_data && \
     chown -R appuser:appuser /app
 
 USER appuser

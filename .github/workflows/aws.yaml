@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths-ignore:
-      - "README.md"
+      - README.md
 
 permissions:
   id-token: write
@@ -16,9 +16,13 @@ env:
   ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY_NAME }}
   ECR_REGISTRY: ${{ secrets.AWS_ECR_LOGIN_URI }}
   IMAGE_TAG: latest
+
   CONTAINER_NAME: ride-forecasting-container
+
   HOST_PORT: 8000
   CONTAINER_PORT: 8000
+
+  FEAST_REPO_PATH: /app/src/ride_demand_forecasting_and_marketplace_optimization/feature_repo
 
 jobs:
 
@@ -28,91 +32,71 @@ jobs:
 
     steps:
 
-      - name: Checkout Repository
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
-      - name: Setup Python
-        uses: actions/setup-python@v6
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
-      - name: Upgrade Pip
-        run: |
-          python -m pip install --upgrade pip
-
       - name: Install Dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Validate Python Environment
+      - name: Environment Validation
         run: |
           python --version
           pip --version
 
-      - name: Lint Checks
-        run: |
-          echo "Lint checks passed"
+      - name: Lint
+        run: echo "Lint checks passed"
 
-      - name: Run Unit Tests
-        run: |
-          echo "Unit tests passed"
+      - name: Tests
+        run: echo "Tests passed"
 
   build-and-push:
-    name: Build and Push Docker Image
-    needs: integration
+    name: Build & Push Image
     runs-on: ubuntu-latest
-
-    outputs:
-      image_uri: ${{ steps.build-image.outputs.image_uri }}
+    needs: integration
 
     steps:
 
-      - name: Checkout Repository
-        uses: actions/checkout@v5
+      - uses: actions/checkout@v5
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5
+      - uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      - uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Build Docker Image
+      - name: Build Image
         run: |
           docker build \
-            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-            .
+            -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
 
-      - name: Push Docker Image
-        id: build-image
+      - name: Push Image
         run: |
           docker push \
             $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-          echo "image_uri=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
-
   deployment:
     name: Continuous Deployment
-    needs: build-and-push
     runs-on: self-hosted
+    needs: build-and-push
 
     steps:
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        uses: aws-actions/amazon-ecr-login@v2
+      - uses: aws-actions/amazon-ecr-login@v2
 
-      - name: Pull Latest Docker Image
+      - name: Pull Latest Image
         run: |
           docker pull \
           $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
@@ -122,48 +106,67 @@ jobs:
           docker stop $CONTAINER_NAME || true
           docker rm -f $CONTAINER_NAME || true
 
-      - name: Remove Containers Using Port 8000
+      - name: Cleanup Port
         run: |
           docker ps -q --filter "publish=$HOST_PORT" | xargs -r docker stop
           docker ps -aq --filter "publish=$HOST_PORT" | xargs -r docker rm -f
-
-      - name: Kill Processes Using Port 8000
-        run: |
           sudo fuser -k ${HOST_PORT}/tcp || true
 
-      - name: Remove Dangling Docker Images
+      - name: Create Persistent Feast Storage
         run: |
-          docker image prune -af || true
+          mkdir -p /home/ubuntu/feast_data
 
-      - name: Run Docker Container
+      - name: Start Container
         run: |
           docker run -d \
             --name $CONTAINER_NAME \
             --restart unless-stopped \
             -p $HOST_PORT:$CONTAINER_PORT \
-            -e AWS_ACCESS_KEY_ID='${{ secrets.AWS_ACCESS_KEY_ID }}' \
-            -e AWS_SECRET_ACCESS_KEY='${{ secrets.AWS_SECRET_ACCESS_KEY }}' \
-            -e AWS_REGION='${{ env.AWS_REGION }}' \
-            -e S3_BUCKET_NAME='ride-forecasting-bucket-8104' \
+            -v /home/ubuntu/feast_data:/app/feast_data \
+            -e AWS_ACCESS_KEY_ID="${{ secrets.AWS_ACCESS_KEY_ID }}" \
+            -e AWS_SECRET_ACCESS_KEY="${{ secrets.AWS_SECRET_ACCESS_KEY }}" \
+            -e AWS_DEFAULT_REGION="${{ env.AWS_REGION }}" \
+            -e S3_BUCKET_NAME="ride-forecasting-bucket-8104" \
             $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Wait for Application Startup
-        run: |
-          sleep 20
+      - name: Wait For Startup
+        run: sleep 20
 
-      - name: Verify Container Running
+      - name: Apply Feast Repository
         run: |
-          docker ps
+          docker exec $CONTAINER_NAME bash -c "
+            cd $FEAST_REPO_PATH &&
+            feast apply
+          "
+
+      - name: Verify Feast Registration
+        run: |
+          docker exec $CONTAINER_NAME bash -c "
+            cd $FEAST_REPO_PATH &&
+            feast feature-views list &&
+            feast feature-services list
+          "
+
+      - name: Validate forecast_service Exists
+        run: |
+          docker exec $CONTAINER_NAME bash -c "
+            cd $FEAST_REPO_PATH &&
+            feast feature-services list | grep forecast_service
+          "
+
+      - name: Container Logs
+        run: |
           docker logs $CONTAINER_NAME
 
-      - name: Application Health Check
+      - name: Health Check
         run: |
           for i in {1..10}; do
-            curl -f http://localhost:${HOST_PORT}/health && break
-            echo "Retrying health check..."
+            curl -f http://localhost:${HOST_PORT}/health && exit 0
             sleep 10
           done
 
-      - name: Cleanup Unused Docker Resources
+          exit 1
+
+      - name: Cleanup
         run: |
-          docker system prune -af || true
+          docker image prune -af || true
