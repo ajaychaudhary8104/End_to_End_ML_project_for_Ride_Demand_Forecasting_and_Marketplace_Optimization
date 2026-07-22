@@ -40,6 +40,7 @@ from src.ride_demand_forecasting_and_marketplace_optimization.config.configurati
 from src.ride_demand_forecasting_and_marketplace_optimization.components.inference import (
     ModelInference
 )
+from src.ride_demand_forecasting_and_marketplace_optimization.utils.s3_loader import download_artifacts
 
 # ==========================================================
 # PATHS
@@ -154,11 +155,14 @@ def initialize_inference():
 async def lifespan(app: FastAPI):
 
     try:
+        logger.info("Downloading Artifacts...")
+        download_artifacts()
+        logger.info("Artifacts Downloaded...")
 
         logger.info(
             "Initializing Model Inference..."
         )
-
+        
         inference = initialize_inference()
 
         app.state.inference = inference
